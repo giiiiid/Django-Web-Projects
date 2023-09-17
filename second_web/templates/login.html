@@ -1,0 +1,12 @@
+<h1>Login to Access Tempo</h1>
+{% for message in messages %}
+<h5 style="color: red;">{{message}}</h5>
+{% endfor %}
+
+<form method="POST", action="{% url 'login' %}">
+    {% csrf_token %}
+    <p>Username</p>
+    <input type="text" name="username" />
+    <input type="password" name="password1" />
+    <input type="submit" />
+</form>
