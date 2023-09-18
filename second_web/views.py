@@ -1,50 +1,57 @@
 from django.shortcuts import render, redirect
-from .models import Services
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
 from email.message import EmailMessage
 from django.http import HttpResponse
+from .models import NewServices, Blogs
 # import ssl
 # import smtplib
 # from .forms import ContactForm
 
 # Create your views here.
 def homepage(request):
+    new_servs = NewServices.objects.all()
     # servs = Services.objects.all()
-    serv1 = Services()
-    serv1.name = 'Determination'
-    serv1.details = 'We focus on nurturing your business to be the best fit the creative and digital world.'
-    serv1.is_true = True
+    # serv1 = Services()
+    # serv1.name = 'Determination'
+    # serv1.details = 'We focus on nurturing your business to be the best fit the creative and digital world.'
+    # serv1.is_true = True
 
-    serv2 = Services()
-    serv2.name = 'Customer Segment'
-    serv2.details = 'Our business clients are our number 1 priority.'
-    serv2.is_true = True
+    # serv2 = Services()
+    # serv2.name = 'Customer Segment'
+    # serv2.details = 'Our business clients are our number 1 priority.'
+    # serv2.is_true = True
 
-    serv3 = Services()
-    serv3.name = 'Creative'
-    serv3.details = 'With our talented team, we can achieve anything in the creative world.'
-    serv3.is_true = True
+    # serv3 = Services()
+    # serv3.name = 'Creative'
+    # serv3.details = 'With our talented team, we can achieve anything in the creative world.'
+    # serv3.is_true = True
 
-    serv4 =  Services()
-    serv4.name = 'Partnership'
-    serv4.details = 'Your business grows, ours too grow.'
-    serv4.is_true = False
+    # serv4 =  Services()
+    # serv4.name = 'Partnership'
+    # serv4.details = 'Your business grows, ours too grow.'
+    # serv4.is_true = False
 
-    all_services = [serv1, serv2, serv3, serv4]
+    # all_services = [serv1, serv2, serv3, serv4]
     # return render(request, 'home.html', {'serv1':serv1, 'serv2':serv2, 'serv3':serv3, 'serv4':serv4})
-    return render(request, 'home.html', {'servs': all_services})
+    return render(request, 'home.html', {'new_servs':new_servs})
+
+def details(request, id):
+    new_servs = NewServices.objects.get(id=id)
+    return render(request, 'details.html', {'new_servs':new_servs})
 
 def blog_page(request):
-    return render(request, 'blog.html')
+    blogs = Blogs.objects.all()
+    return render(request, 'blog.html', {'blogs':blogs})
 
-def singles(request):
-    return render(request, 'blog-single.html')
+def singles(request, id):
+    Blogsingles = Blogs.objects.get(id=id)
+    return render(request, 'blog-single.html', {'Blogsingles':Blogsingles})
 
 def portfolio(request):
-    return render(request, 'portfolio-details.html')
+    return render(request, 'portfolio-details2.html')
 
 def register(request):
     if request.method == 'POST':
@@ -89,30 +96,30 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
-def posts(request):
-    serv1 = Services()
-    serv1.name = 'Determination'
-    serv1.details = 'We focus on nurturing your business to be the best fit the creative and digital world.'
-    serv1.is_true = True
+# def posts(request):
+    # serv1 = Services()
+    # serv1.name = 'Determination'
+    # serv1.details = 'We focus on nurturing your business to be the best fit the creative and digital world.'
+    # serv1.is_true = True
 
-    serv2 = Services()
-    serv2.name = 'Customer Segment'
-    serv2.details = 'Our business clients are our number 1 priority.'
-    serv2.is_true = True
+    # serv2 = Services()
+    # serv2.name = 'Customer Segment'
+    # serv2.details = 'Our business clients are our number 1 priority.'
+    # serv2.is_true = True
 
-    serv3 = Services()
-    serv3.name = 'Creative'
-    serv3.details = 'With our talented team, we can achieve anything in the creative world.'
-    serv3.is_true = True
+    # serv3 = Services()
+    # serv3.name = 'Creative'
+    # serv3.details = 'With our talented team, we can achieve anything in the creative world.'
+    # serv3.is_true = True
 
-    serv4 =  Services()
-    serv4.name = 'Partnership'
-    serv4.details = 'Your business grows, ours too grow.'
-    serv4.is_true = False
+    # serv4 =  Services()
+    # serv4.name = 'Partnership'
+    # serv4.details = 'Your business grows, ours too grow.'
+    # serv4.is_true = False
 
-    all_services = [serv1, serv2, serv3, serv4]
+    # all_services = [serv1, serv2, serv3, serv4]
     # return render(request, 'home.html', {'serv1':serv1, 'serv2':serv2, 'serv3':serv3, 'serv4':serv4})
-    return render(request, 'home.html', {'id': all_services})
+    # return render(request, 'home.html', {'id': all_services})
     
 
 def contact(request):
@@ -148,3 +155,4 @@ def contact(request):
     
 def success(request):
     return render(request, 'success.html')
+
