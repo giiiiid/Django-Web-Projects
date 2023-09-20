@@ -1,60 +1,37 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from django.core.mail import EmailMessage
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import EmailMessage, send_mail, BadHeaderError
+from django.core import mail
 from django.conf import settings
 from email.message import EmailMessage
 from django.http import HttpResponse
 from .models import NewServices, Blogs
-# import ssl
-# import smtplib
-# from .forms import ContactForm
+
 
 # Create your views here.
-def homepage(request):
+
+def homepage(request):       # View for the homepage
     new_servs = NewServices.objects.all()
-    # servs = Services.objects.all()
-    # serv1 = Services()
-    # serv1.name = 'Determination'
-    # serv1.details = 'We focus on nurturing your business to be the best fit the creative and digital world.'
-    # serv1.is_true = True
-
-    # serv2 = Services()
-    # serv2.name = 'Customer Segment'
-    # serv2.details = 'Our business clients are our number 1 priority.'
-    # serv2.is_true = True
-
-    # serv3 = Services()
-    # serv3.name = 'Creative'
-    # serv3.details = 'With our talented team, we can achieve anything in the creative world.'
-    # serv3.is_true = True
-
-    # serv4 =  Services()
-    # serv4.name = 'Partnership'
-    # serv4.details = 'Your business grows, ours too grow.'
-    # serv4.is_true = False
-
-    # all_services = [serv1, serv2, serv3, serv4]
-    # return render(request, 'home.html', {'serv1':serv1, 'serv2':serv2, 'serv3':serv3, 'serv4':serv4})
+    
     return render(request, 'home.html', {'new_servs':new_servs})
 
-def details(request, id):
+def detailed_services(request, id):      # View to read more about our services
     new_servs = NewServices.objects.get(id=id)
     return render(request, 'details.html', {'new_servs':new_servs})
 
-def blog_page(request):
+def blog_page(request):        # View to showcase blogs
     blogs = Blogs.objects.all()
     return render(request, 'blog.html', {'blogs':blogs})
 
-def singles(request, id):
+def singles(request, id):      # View to read a specific blog
     Blogsingles = Blogs.objects.get(id=id)
     return render(request, 'blog-single.html', {'Blogsingles':Blogsingles})
 
-def portfolio(request):
+def portfolio(request):        # View to show the portfolio of each element
     return render(request, 'portfolio-details2.html')
 
-def register(request):
+def register(request):         # Registration to access Tempo
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -76,10 +53,9 @@ def register(request):
             messages.info(request, "Passwords don't match")
             return redirect('register')
     else:
-    #     return redirect('register')
         return render(request, 'register.html')
 
-def login(request):
+def login(request):            # Login
     if request.method == 'POST':
         username = request.POST['username']
         passed = request.POST['password1']
@@ -93,55 +69,28 @@ def login(request):
     else:
         return render(request, 'login.html')
 
-def logout(request):
+def logout(request):              # Logout
     auth.logout(request)
     return redirect('login')
 
-# def contact(request):
-#     name = request.POST.get('name')
-#     email = request.POST.get('email')
-#     message = request.POST.get('message')
-#     subject = request.POST.get('subject')
+def contact(request):             # Sending emails
+    name = request.POST.get('name')
+    email = request.POST.get('email')
+    message = request.POST.get('message')
+    subject = request.POST.get('subject')
+    send_mail(subject, message, email, [settings.EMAIL_HOST_USER])
 
-#     # em = EmailMessage(
-#     #     subject = f'{name} from Tempo',
-#     #     body=message,
-#     #     from_email=settings.EMAIL_HOST_USER,
-#     #     to_email=settings.EMAIL_HOST_USER,
-#     #     reply_to = [email]
-#     # )      
-#     # email.send()
-#     # return HttpResponse('Success')
-#     form_data = {
-#             'name':name,
-#             'email':email,
-#             'subject':subject,
-#             'message':message,
-#     }
-#     message = '''
-#         From:\n\t\t{}\n
-#         Message:\n\t\t{}\n
-#         Email:\n\t\t{}\n
-#         Phone:\n\t\t{}\n
-#         '''.format(form_data['name'], form_data['message'], form_data['email'],form_data['subject'])
-#     send_mail('You got a mail!', message, '', [settings.EMAIL_HOST_USER])
 
-#     return render(request, 'home.html',{})
-
-def send_email(request):
-    subject = request.POST.get("subject", "")
-    email = request.POST.get("email", "")
-    name = request.POST.get("name", "")
-    message = request.POST.get("message", "")
-    send_mail(subject, message,email,[settings.EMAIL_HOST_USER])
+    #-----------Another method-------------#
+    # with mail.get_connection() as connection:
+    #     mail.EmailMessage(
+    #         subject,
+    #         message,
+    #         email,
+    #         [settings.EMAIL_HOST_USER],
+    #         connection=connection,
+    #     ).send()
     return render(request, 'contact.html')
 
-    # try:
-    #     send_mail(subject, message,email,['gideonnobbs@gmail.com'])
-    # except BadHeaderError:
-    #     return HttpResponse("invalid header found")
-    # return render(request, 'home.html')
 
-def success(request):
-    return render(request, 'success.html')
 
