@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 from email.message import EmailMessage
 from django.http import HttpResponse
@@ -96,37 +97,51 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
-def contact(request):
-    name = request.POST.get('name')
-    email = request.POST.get('email')
-    message = request.POST.get('message')
-    subject = request.POST.get('subject')
+# def contact(request):
+#     name = request.POST.get('name')
+#     email = request.POST.get('email')
+#     message = request.POST.get('message')
+#     subject = request.POST.get('subject')
 
-    # em = EmailMessage(
-    #     subject = f'{name} from Tempo',
-    #     body=message,
-    #     from_email=settings.EMAIL_HOST_USER,
-    #     to_email=settings.EMAIL_HOST_USER,
-    #     reply_to = [email]
-    # )      
-    # email.send()
-    # return HttpResponse('Success')
-    form_data = {
-            'name':name,
-            'email':email,
-            'subject':subject,
-            'message':message,
-    }
-    message = '''
-        From:\n\t\t{}\n
-        Message:\n\t\t{}\n
-        Email:\n\t\t{}\n
-        Phone:\n\t\t{}\n
-        '''.format(form_data['name'], form_data['message'], form_data['email'],form_data['subject'])
-    send_mail('You got a mail!', message, '', [settings.EMAIL_HOST_USER])
+#     # em = EmailMessage(
+#     #     subject = f'{name} from Tempo',
+#     #     body=message,
+#     #     from_email=settings.EMAIL_HOST_USER,
+#     #     to_email=settings.EMAIL_HOST_USER,
+#     #     reply_to = [email]
+#     # )      
+#     # email.send()
+#     # return HttpResponse('Success')
+#     form_data = {
+#             'name':name,
+#             'email':email,
+#             'subject':subject,
+#             'message':message,
+#     }
+#     message = '''
+#         From:\n\t\t{}\n
+#         Message:\n\t\t{}\n
+#         Email:\n\t\t{}\n
+#         Phone:\n\t\t{}\n
+#         '''.format(form_data['name'], form_data['message'], form_data['email'],form_data['subject'])
+#     send_mail('You got a mail!', message, '', [settings.EMAIL_HOST_USER])
 
-    return render(request, 'home.html',{})
-    
+#     return render(request, 'home.html',{})
+
+def send_email(request):
+    subject = request.POST.get("subject", "")
+    email = request.POST.get("email", "")
+    name = request.POST.get("name", "")
+    message = request.POST.get("message", "")
+    send_mail(subject, message,email,[settings.EMAIL_HOST_USER])
+    return render(request, 'contact.html')
+
+    # try:
+    #     send_mail(subject, message,email,['gideonnobbs@gmail.com'])
+    # except BadHeaderError:
+    #     return HttpResponse("invalid header found")
+    # return render(request, 'home.html')
+
 def success(request):
     return render(request, 'success.html')
 
